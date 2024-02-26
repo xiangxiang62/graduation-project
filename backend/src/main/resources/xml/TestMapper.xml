@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.examsystem.mapper.TestMapper">
+    <select id="selectPageWithSubject" resultType="com.zj.examsystem.entity.Test">
+        SELECT *
+        FROM test_with_subject_clazz ${ew.customSqlSegment}
+    </select>
+
+    <select id="countByTeacherId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM test_with_subject_clazz
+        WHERE teacher_id = #{userId}
+    </select>
+
+    <select id="countNotFinishByUserId" resultType="com.zj.examsystem.entity.Test">
+        SELECT *
+        FROM test
+                 JOIN subject_with_user_clazz ON subject_with_user_clazz.subject_id = test.subject_id
+                 JOIN student_with_role_clazz_major ON student_with_role_clazz_major.clazz_id = subject_with_user_clazz.clazz_id
+        WHERE end_date > NOW()
+          AND student_with_role_clazz_major.user_id = #{userId}
+    </select>
+
+    <select id="findById" resultType="com.zj.examsystem.entity.Test">
+        SELECT *
+        FROM test_with_subject_clazz
+        WHERE test_id = #{testId}
+    </select>
+</mapper>

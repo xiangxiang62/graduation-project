@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zj.examsystem.mapper.QuestionMapper">
+    <select id="findAllByTeacherId" resultType="com.zj.examsystem.entity.Question">
+        SELECT q.*
+        FROM question_with_type_subject_knowledge q
+                 JOIN subject_with_user_clazz swuc on q.subject_id = swuc.subject_id
+        WHERE swuc.teacher_id = #{userId}
+    </select>
+
+    <select id="countByTeacherId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM question_with_type_subject_knowledge q
+                 JOIN subject_with_user_clazz swuc on q.subject_id = swuc.subject_id
+        WHERE swuc.teacher_id = #{userId}
+    </select>
+
+    <select id="findById" resultType="com.zj.examsystem.entity.Question">
+        SELECT *
+        FROM question_with_type_subject_knowledge
+        WHERE question_id = #{questionId}
+    </select>
+
+    <select id="findListById" resultType="com.zj.examsystem.entity.Question">
+        SELECT *
+        FROM question_with_type_subject_knowledge ${ew.customSqlSegment}
+    </select>
+
+    <select id="selectSameWithDifficultyAndTypeAndKnowledge" resultType="com.zj.examsystem.entity.Question">
+        SELECT *
+        FROM question_with_type_subject_knowledge
+        WHERE question_id != #{questionId}
+          AND question_difficulty BETWEEN #{difficultyLower} AND #{difficultyUpper}
+          AND type_id = #{typeId}
+          AND knowledge_id = #{knowledgeId}
+        ORDER BY ABS(question_difficulty - #{questionDifficulty})
+    </select>
+
+    <select id="selectSameWithTypeAndKnowledge" resultType="com.zj.examsystem.entity.Question">
+        SELECT *
+        FROM question_with_type_subject_knowledge
+        WHERE question_id != #{questionId}
+          AND type_id = #{typeId}
+          AND knowledge_id = #{knowledgeId}
+        ORDER BY ABS(question_difficulty - #{questionDifficulty})
+    </select>
+</mapper>
